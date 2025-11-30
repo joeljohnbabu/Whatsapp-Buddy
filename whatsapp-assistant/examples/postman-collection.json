@@ -1,0 +1,108 @@
+{
+  "info": {
+    "name": "WhatsApp Assistant API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Webhook - First Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"From\": \"whatsapp:+1234567890\",\n  \"Body\": \"Hello\",\n  \"MessageSid\": \"test-msg-1\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/webhook",
+          "host": ["{{base_url}}"],
+          "path": ["webhook"]
+        }
+      }
+    },
+    {
+      "name": "Webhook - Opt In",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"From\": \"whatsapp:+1234567890\",\n  \"Body\": \"YES\",\n  \"MessageSid\": \"test-msg-2\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/webhook",
+          "host": ["{{base_url}}"],
+          "path": ["webhook"]
+        }
+      }
+    },
+    {
+      "name": "Webhook - Create Reminder",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"From\": \"whatsapp:+1234567890\",\n  \"Body\": \"Remind me tomorrow at 9am to call mom\",\n  \"MessageSid\": \"test-msg-3\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/webhook",
+          "host": ["{{base_url}}"],
+          "path": ["webhook"]
+        }
+      }
+    },
+    {
+      "name": "API - List Reminders",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/reminders?phoneNumber=+1234567890",
+          "host": ["{{base_url}}"],
+          "path": ["api", "reminders"],
+          "query": [
+            {
+              "key": "phoneNumber",
+              "value": "+1234567890"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "API - Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/health",
+          "host": ["{{base_url}}"],
+          "path": ["api", "health"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    }
+  ]
+}
+

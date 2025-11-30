@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  phoneNumber   String    @unique
+  consentGiven  Boolean   @default(false)
+  consentDate   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  reminders     Reminder[]
+  threads       MessageThread[]
+  messages      Message[]
+  
+  @@index([phoneNumber])
+}
+
+model Reminder {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  subject       String
+  scheduledFor  DateTime
+  originalText  String?
+  status        ReminderStatus @default(PENDING)
+  
+  // Recurrence
+  isRecurring   Boolean   @default(false)
+  recurrenceType RecurrenceType?
+  recurrenceEnd DateTime?
+  
+  // Metadata
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deliveredAt   DateTime?
+  cancelledAt   DateTime?
+  
+  @@index([userId, status])
+  @@index([scheduledFor, status])
+}
+
+enum ReminderStatus {
+  PENDING
+  DELIVERED
+  CANCELLED
+  SNOOZED
+}
+
+enum RecurrenceType {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+model MessageThread {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  threadId      String    @unique // WhatsApp thread/conversation ID
+  summary       String?
+  actionItems   String[]  // JSON array of action items
+  summarizedAt  DateTime?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  messages      Message[]
+  
+  @@index([userId])
+  @@index([threadId])
+}
+
+model Message {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  threadId      String?
+  thread        MessageThread? @relation(fields: [threadId], references: [id], onDelete: SetNull)
+  
+  whatsappMessageId String? @unique
+  content       String
+  direction     MessageDirection
+  intent        String?   // Detected intent type
+  intentData    String?   // JSON string of parsed intent data
+  
+  createdAt     DateTime  @default(now())
+  expiresAt     DateTime? // For data retention
+  
+  @@index([userId, createdAt])
+  @@index([threadId, createdAt])
+  @@index([expiresAt])
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
