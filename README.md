@@ -22,8 +22,8 @@ A WhatsApp-based personal assistant that automates reminders, follow-ups, messag
 📦 Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/whatsapp-buddy.git
-   cd whatsapp-buddy
+   git clone https://github.com/yourusername/whatsapp-assistant.git
+   cd whatsapp-assistant
 2. Install Dependecies:
    npm install
    
